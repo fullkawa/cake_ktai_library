@@ -1,14 +1,14 @@
 <?php
 /**
  * Lib3gk, supports Japanese mobile phone sites coding.
- * It provides many functions such as a carrier check to use Referer or E-mail, 
+ * It provides many functions such as a carrier check to use Referer or E-mail,
  * conversion of an Emoji, and more.
  *
  * PHP versions 5
  *
  * Lib3gk
  * Copyright 2009-2012, ECWorks.
- 
+
  * Licensed under The GNU General Public Licence
  * Redistributions of files must retain the above copyright notice.
  *
@@ -31,7 +31,7 @@ require_once(dirname(__FILE__).'/lib3gk_def.php');
  * @subpackage    Lib3gk.libs
  */
 class Lib3gkCarrier {
-	
+
 	//================================================================
 	//Properties
 	//================================================================
@@ -45,13 +45,13 @@ class Lib3gkCarrier {
 	 * @access protected
 	 */
 	var $_params = array(
-		'iphone_user_agent_belongs_to_ktai'      => false, 
-		'iphone_user_agent_belongs_to_softbank'  => false, 
-		'iphone_email_belongs_to_ktai_email'     => false, 
-		'iphone_email_belongs_to_softbank_email' => false, 
-		'android_user_agent_belongs_to_ktai'     => false, 
+		'iphone_user_agent_belongs_to_ktai'      => false,
+		'iphone_user_agent_belongs_to_softbank'  => false,
+		'iphone_email_belongs_to_ktai_email'     => false,
+		'iphone_email_belongs_to_softbank_email' => false,
+		'android_user_agent_belongs_to_ktai'     => false,
 	);
-	
+
 	//------------------------------------------------
 	//Machine information
 	//------------------------------------------------
@@ -62,7 +62,7 @@ class Lib3gkCarrier {
 	 * @access protected
 	 */
 	var $_carrier      = null;
-	
+
 	/**
 	 * キャリア名
 	 *
@@ -70,7 +70,7 @@ class Lib3gkCarrier {
 	 * @access protected
 	 */
 	var $_carrier_name = null;
-	
+
 	/**
 	 * 端末名
 	 *
@@ -78,8 +78,8 @@ class Lib3gkCarrier {
 	 * @access protected
 	 */
 	var $_machine_name = null;
-	
-	
+
+
 	//================================================================
 	//Methods
 	//================================================================
@@ -93,7 +93,7 @@ class Lib3gkCarrier {
 	 * @access public
 	 * @static
 	 */
-	function &get_instance(){
+	static function get_instance(){
 		static $instance = array();
 		if(!$instance){
 			$instance[0] =& new Lib3gkCarrier();
@@ -101,8 +101,8 @@ class Lib3gkCarrier {
 		}
 		return $instance[0];
 	}
-	
-	
+
+
 	/**
 	 * 初期化
 	 *
@@ -112,8 +112,8 @@ class Lib3gkCarrier {
 	function initialize(){
 		$this->get_carrier();
 	}
-	
-	
+
+
 	/**
 	 * 後始末
 	 *
@@ -122,8 +122,8 @@ class Lib3gkCarrier {
 	 */
 	function shutdown(){
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkCarrier methods
 	//------------------------------------------------
@@ -135,17 +135,17 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function analyze_user_agent($user_agent = null){
-		
+
 		$arr = array(
-			'carrier'      => KTAI_CARRIER_UNKNOWN, 
-			'carrier_name' => 'others', 
-			'machine_name' => 'default', 
+			'carrier'      => KTAI_CARRIER_UNKNOWN,
+			'carrier_name' => 'others',
+			'machine_name' => 'default',
 		);
-		
+
 		if($user_agent === null){
 			$user_agent = $_SERVER['HTTP_USER_AGENT'];
 		}
-		
+
 		//DoCoMo
 		//
 		if(strpos($user_agent, 'DoCoMo') !== false){
@@ -157,7 +157,7 @@ class Lib3gkCarrier {
 			if(preg_match('_DoCoMo/2\.0\s([\w\+]+)\(_', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-		
+
 		//Softbank
 		//
 		}else
@@ -167,7 +167,7 @@ class Lib3gkCarrier {
 			if(preg_match('_SoftBank/\d\.\d/([\w]+)_', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-		
+
 		}else
 		if(strpos($user_agent, 'Vodafone') !== false){
 			$arr['carrier'] = KTAI_CARRIER_SOFTBANK;
@@ -175,7 +175,7 @@ class Lib3gkCarrier {
 			if(preg_match('_Vodafone/\d\.\d/([\w]+)_', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-		
+
 		}else
 		if(strpos($user_agent, 'J-PHONE') !== false){
 			$arr['carrier'] = KTAI_CARRIER_SOFTBANK;
@@ -183,19 +183,19 @@ class Lib3gkCarrier {
 			if(preg_match('_J-PHONE/\d\.\d/([\w]+)_', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-			
+
 		}else
 		if(strpos($user_agent, 'MOT-C980') !== false){
 			$arr['carrier'] = KTAI_CARRIER_SOFTBANK;
 			$arr['carrier_name'] = 'MOT-C980';
 			$arr['machine_name'] = 'default';
-			
+
 		}else
 		if(strpos($user_agent, 'MOT-V980') !== false){
 			$arr['carrier'] = KTAI_CARRIER_SOFTBANK;
 			$arr['carrier_name'] = 'MOT-V980';
 			$arr['machine_name'] = 'default';
-			
+
 		//KDDI
 		//
 		}else
@@ -205,7 +205,7 @@ class Lib3gkCarrier {
 			if(preg_match('/KDDI\-([\w]+)\s/', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-		
+
 		//EMOBILE
 		//
 		}else
@@ -215,7 +215,7 @@ class Lib3gkCarrier {
 			if(preg_match('/\(([\w]+);/', $user_agent, $m)){
 				$arr['machine_name'] = $m[1];
 			}
-		
+
 		//iPhone
 		//
 		}else
@@ -223,7 +223,7 @@ class Lib3gkCarrier {
 			$arr['carrier'] = KTAI_CARRIER_IPHONE;
 			$arr['carrier_name'] = 'iPhone';
 			$arr['machine_name'] = 'default';
-		
+
 		//Android
 		//
 		}else
@@ -231,7 +231,7 @@ class Lib3gkCarrier {
 			$arr['carrier'] = KTAI_CARRIER_ANDROID;
 			$arr['carrier_name'] = 'Android';
 			$arr['machine_name'] = 'default';
-		
+
 		//PHS
 		//
 		}else
@@ -250,11 +250,11 @@ class Lib3gkCarrier {
 				$arr['machine_name'] = $m[1];
 			}
 		}
-		
+
 		return $arr;
 	}
-	
-	
+
+
 	/**
 	 * キャリア番号の入手
 	 *
@@ -264,22 +264,22 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function get_carrier($user_agent = null, $refresh = false){
-		
+
 		if($this->_carrier === null || $user_agent !== null || $refresh){
 			$arr = $this->analyze_user_agent($user_agent);
-			
+
 			if($this->_carrier === null || $refresh){
 				$this->_carrier = $arr['carrier'];
 				$this->_carrier_name = $arr['carrier_name'];
 				$this->_machine_name = $arr['machine_name'];
 			}
-			
+
 			return $arr['carrier'];
 		}
 		return $this->_carrier;
 	}
-	
-	
+
+
 	/**
 	 * docomo端末かのチェック
 	 *
@@ -289,8 +289,8 @@ class Lib3gkCarrier {
 	function is_imode(){
 		return $this->get_carrier() == KTAI_CARRIER_DOCOMO;
 	}
-	
-	
+
+
 	/**
 	 * SoftBank端末かのチェック
 	 *
@@ -298,11 +298,11 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function is_softbank(){
-		return $this->get_carrier() == KTAI_CARRIER_SOFTBANK || 
+		return $this->get_carrier() == KTAI_CARRIER_SOFTBANK ||
 			($this->_params['iphone_user_agent_belongs_to_softbank'] && $this->is_iphone());
 	}
-	
-	
+
+
 	/**
 	 * vodafone端末かのチェック
 	 * ※レガシーな機能です。通常の判定にはis_softbank()を使ってください
@@ -311,9 +311,9 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function is_vodafone(){
-		
+
 		$flag = false;
-		
+
 		$this->get_carrier();
 		if(strpos($_SERVER['HTTP_USER_AGENT'], 'Vodafone') !== false){
 			$flag = true;
@@ -321,11 +321,11 @@ class Lib3gkCarrier {
 		if($this->is_jphone()){
 			$flag = true;
 		}
-		
+
 		return $flag;
 	}
-	
-	
+
+
 	/**
 	 * J-PHONE端末かのチェック
 	 * ※レガシーな機能です。通常の判定にはis_softbank()を使ってください
@@ -337,8 +337,8 @@ class Lib3gkCarrier {
 		$this->get_carrier();
 		return strpos($_SERVER['HTTP_USER_AGENT'], 'J-PHONE') !== false;
 	}
-	
-	
+
+
 	/**
 	 * AU端末かのチェック
 	 *
@@ -348,8 +348,8 @@ class Lib3gkCarrier {
 	function is_ezweb(){
 		return $this->get_carrier() == KTAI_CARRIER_KDDI;
 	}
-	
-	
+
+
 	/**
 	 * EMOBILE端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_emobile()を参照
@@ -360,8 +360,8 @@ class Lib3gkCarrier {
 	function is_emobile(){
 		return $this->get_carrier() == KTAI_CARRIER_EMOBILE;
 	}
-	
-	
+
+
 	/**
 	 * iPhone端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_iphone()を参照
@@ -372,8 +372,8 @@ class Lib3gkCarrier {
 	function is_iphone(){
 		return $this->get_carrier() == KTAI_CARRIER_IPHONE;
 	}
-	
-	
+
+
 	/**
 	 * Android端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_Android()を参照
@@ -384,8 +384,8 @@ class Lib3gkCarrier {
 	function is_android(){
 		return $this->get_carrier() == KTAI_CARRIER_ANDROID;
 	}
-	
-	
+
+
 	/**
 	 * 携帯かチェック
 	 *
@@ -393,15 +393,15 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function is_ktai(){
-		return 	$this->is_imode() || 
-				$this->is_softbank() || 
-				$this->is_ezweb() || 
-				$this->is_emobile() || 
+		return 	$this->is_imode() ||
+				$this->is_softbank() ||
+				$this->is_ezweb() ||
+				$this->is_emobile() ||
 				($this->_params['iphone_user_agent_belongs_to_ktai'] && $this->is_iphone()) ||
 				($this->_params['android_user_agent_belongs_to_ktai'] && $this->is_android());
 	}
-	
-	
+
+
 	/**
 	 * PHSかチェック
 	 *
@@ -411,8 +411,8 @@ class Lib3gkCarrier {
 	function is_phs(){
 		return $this->get_carrier() == KTAI_CARRIER_PHS;
 	}
-	
-	
+
+
 	/**
 	 * docomoのメールアドレスかチェック
 	 *
@@ -423,8 +423,8 @@ class Lib3gkCarrier {
 	function is_imode_email($email){
 		return stripos($email, '@docomo.ne.jp') !== false;
 	}
-	
-	
+
+
 	/**
 	 * SoftBankのメールアドレスかチェック
 	 *
@@ -437,8 +437,8 @@ class Lib3gkCarrier {
 		if($this->_params['iphone_email_belongs_to_softbank_email'] && $this->is_iphone_email($email)) return true;
 		return $this->is_vodafone_email($email);
 	}
-	
-	
+
+
 	/**
 	 * iPhoneのメールアドレスかチェック
 	 *
@@ -449,8 +449,8 @@ class Lib3gkCarrier {
 	function is_iphone_email($email){
 		return stripos($email, '@i.softbank.jp') !== false;
 	}
-	
-	
+
+
 	/**
 	 * vodafoneのメールアドレスかチェック
 	 * ※レガシーな機能です。通常の判定にはis_softbank_email()を使ってください
@@ -463,8 +463,8 @@ class Lib3gkCarrier {
 		if(preg_match('/@[dhtckrsnq]\.vodafone\.ne\.jp/i', $email)) return true;
 		return $this->is_jphone_email($email);
 	}
-	
-	
+
+
 	/**
 	 * J-PHONEのメールアドレスかチェック
 	 * ※レガシーな機能です。通常の判定にはis_softbank_email()を使ってください
@@ -476,8 +476,8 @@ class Lib3gkCarrier {
 	function is_jphone_email($email){
 		return(preg_match('/@jp\-[dhtckrsnq]\.ne\.jp/i', $email)) ? true : false;
 	}
-	
-	
+
+
 	/**
 	 * AUのメールアドレスかチェック
 	 *
@@ -486,11 +486,11 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function is_ezweb_email($email){
-		return (stripos($email, '@ezweb.ne.jp') !== false) || 
+		return (stripos($email, '@ezweb.ne.jp') !== false) ||
 			(preg_match('/@[a-z-]{2,10}\.biz\.ezweb\.ne\.jp/i', $email) ? true : false);
 	}
-	
-	
+
+
 	/**
 	 * EMOBILEのメールアドレスかチェック
 	 *
@@ -501,8 +501,8 @@ class Lib3gkCarrier {
 	function is_emobile_email($email){
 		return stripos($email, '@emnet.ne.jp') !== false;
 	}
-	
-	
+
+
 	/**
 	 * 携帯のメールアドレスかチェック
 	 *
@@ -511,14 +511,14 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function is_ktai_email($email){
-		return 	$this->is_imode_email($email) || 
-				$this->is_softbank_email($email) || 
+		return 	$this->is_imode_email($email) ||
+				$this->is_softbank_email($email) ||
 				$this->is_ezweb_email($email) ||
 				$this->is_emobile_email($email) ||
 				($this->_params['iphone_email_belongs_to_ktai_email'] && $this->is_iphone_email($email));
 	}
-	
-	
+
+
 	/**
 	 * PHSのメールアドレスかチェック
 	 *
@@ -530,8 +530,8 @@ class Lib3gkCarrier {
 		if(preg_match('/@[\w]+\.pdx\.ne\.jp/i', $email)) return true;
 		return stripos($email, '@willcom.com') !== false;
 	}
-	
-	
+
+
 	/**
 	 * メールアドレスからキャリアコードの入手
 	 *
@@ -540,9 +540,9 @@ class Lib3gkCarrier {
 	 * @access public
 	 */
 	function get_email_carrier($email){
-		
+
 		$carrier = KTAI_CARRIER_UNKNOWN;
-		
+
 		if($this->is_imode_email($email)){
 			$carrier = KTAI_CARRIER_DOCOMO;
 		}else
@@ -561,9 +561,9 @@ class Lib3gkCarrier {
 		if($this->is_phs_email($email)){
 			$carrier = KTAI_CARRIER_PHS;
 		}
-		
+
 		return $carrier;
 	}
-	
-	
+
+
 }

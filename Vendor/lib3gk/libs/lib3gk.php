@@ -1,14 +1,14 @@
 <?php
 /**
  * Lib3gk, supports Japanese mobile phone sites coding.
- * It provides many functions such as a carrier check to use Referer or E-mail, 
+ * It provides many functions such as a carrier check to use Referer or E-mail,
  * conversion of an Emoji, and more.
  *
  * PHP versions 5
  *
  * Lib3gk
  * Copyright 2009-2012, ECWorks.
- 
+
  * Licensed under The GNU General Public Licence
  * Redistributions of files must retain the above copyright notice.
  *
@@ -32,7 +32,7 @@ require_once(dirname(__FILE__).'/lib3gk_def.php');
  * @subpackage    Lib3gk.libs
  */
 class Lib3gk {
-	
+
 	//================================================================
 	//Properties
 	//================================================================
@@ -46,7 +46,7 @@ class Lib3gk {
 	 * @access protected
 	 */
 	var $_version = '0.5.1';
-	
+
 	//------------------------------------------------
 	//Library sub classes
 	//------------------------------------------------
@@ -57,7 +57,7 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__carrier = null;
-	
+
 	/**
 	 * Lib3gkEmojiのインスタンス
 	 *
@@ -65,7 +65,7 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__emoji   = null;
-	
+
 	/**
 	 * Lib3gkHtmlのインスタンス
 	 *
@@ -73,7 +73,7 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__html    = null;
-	
+
 	/**
 	 * Lib3gkMachineのインスタンス
 	 *
@@ -81,7 +81,7 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__machine = null;
-	
+
 	/**
 	 * Lib3gkIpのインスタンス
 	 *
@@ -89,7 +89,7 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__ip      = null;
-	
+
 	/**
 	 * Lib3gkToolsのインスタンス
 	 *
@@ -97,8 +97,8 @@ class Lib3gk {
 	 * @access private
 	 */
 	var $__tools   = null;
-	
-	
+
+
 	//------------------------------------------------
 	//Parameters
 	//------------------------------------------------
@@ -109,35 +109,35 @@ class Lib3gk {
 	 * @access protected
 	 */
 	var $_params = array(
-		
+
 		//Encoding params
 		//
-		'input_encoding'  => KTAI_ENCODING_SJISWIN, 
-		'output_encoding' => KTAI_ENCODING_SJISWIN, 
-		'use_binary_emoji' => true, 
-		
+		'input_encoding'  => KTAI_ENCODING_SJISWIN,
+		'output_encoding' => KTAI_ENCODING_SJISWIN,
+		'use_binary_emoji' => true,
+
 		//Emoji image params
 		//
-		'use_img_emoji' => false, 
-		'img_emoji_url' => './img/emoticons/', 
-		'img_emoji_ext' => 'gif', 
-		'img_emoji_size' => array(16, 16), 
-		
+		'use_img_emoji' => false,
+		'img_emoji_url' => './img/emoticons/',
+		'img_emoji_ext' => 'gif',
+		'img_emoji_size' => array(16, 16),
+
 		//iPhone params
 		//
-		'iphone_user_agent_belongs_to_ktai'      => false, 
-		'iphone_user_agent_belongs_to_softbank'  => false, 
-		'iphone_email_belongs_to_ktai_email'     => false, 
-		'iphone_email_belongs_to_softbank_email' => false, 
-		
+		'iphone_user_agent_belongs_to_ktai'      => false,
+		'iphone_user_agent_belongs_to_softbank'  => false,
+		'iphone_email_belongs_to_ktai_email'     => false,
+		'iphone_email_belongs_to_softbank_email' => false,
+
 		//Session params
 		//
-		'enable_ktai_session' => true, 
-		'use_redirect_session_id' => false, 
-		
+		'enable_ktai_session' => true,
+		'use_redirect_session_id' => false,
+
 	);
-	
-	
+
+
 	//================================================================
 	//Methods
 	//================================================================
@@ -151,7 +151,7 @@ class Lib3gk {
 	 * @access public
 	 * @static
 	 */
-	function &get_instance(){
+	static function get_instance(){
 		static $instance = array();
 		if(!$instance){
 			$instance[0] =& new Lib3gk();
@@ -159,8 +159,8 @@ class Lib3gk {
 		}
 		return $instance[0];
 	}
-	
-	
+
+
 	/**
 	 * 初期化
 	 *
@@ -170,8 +170,8 @@ class Lib3gk {
 	function initialize(){
 		$this->get_carrier();
 	}
-	
-	
+
+
 	/**
 	 * 後始末
 	 *
@@ -180,7 +180,7 @@ class Lib3gk {
 	 */
 	function shutdown(){
 	}
-	
+
 	//------------------------------------------------
 	//Load subclasses
 	//------------------------------------------------
@@ -198,8 +198,8 @@ class Lib3gk {
 		$this->_params = array_merge($this->__carrier->_params, $this->_params);
 		$this->__carrier->_params = &$this->_params;
 	}
-	
-	
+
+
 	/**
 	 * 絵文字関連サブクラスの読み込み
 	 *
@@ -214,8 +214,8 @@ class Lib3gk {
 		$this->_params = array_merge($this->__emoji->_params, $this->_params);
 		$this->__emoji->_params = &$this->_params;
 	}
-	
-	
+
+
 	/**
 	 * 機種情報関連サブクラスの読み込み
 	 *
@@ -228,8 +228,8 @@ class Lib3gk {
 		}
 		$this->__machine = Lib3gkMachine::get_instance();
 	}
-	
-	
+
+
 	/**
 	 * HTML関連サブクラスの読み込み
 	 *
@@ -244,8 +244,8 @@ class Lib3gk {
 		$this->_params = array_merge($this->__html->_params, $this->_params);
 		$this->__html->_params = &$this->_params;
 	}
-	
-	
+
+
 	/**
 	 * IP関連サブクラスの読み込み
 	 *
@@ -258,8 +258,8 @@ class Lib3gk {
 		}
 		$this->__ip = Lib3gkIp::get_instance();
 	}
-	
-	
+
+
 	/**
 	 * その他サブクラスの読み込み
 	 *
@@ -274,8 +274,8 @@ class Lib3gk {
 		$this->_params = array_merge($this->__tools->_params, $this->_params);
 		$this->__tools->_params = &$this->_params;
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gk methods
 	//------------------------------------------------
@@ -288,8 +288,8 @@ class Lib3gk {
 	function get_version(){
 		return $this->_version;
 	}
-	
-	
+
+
 	/**
 	 * リダイレクト処理
 	 * URLを解析して、適切なURLに変更します。
@@ -301,8 +301,8 @@ class Lib3gk {
 	 * @access public
 	 */
 	function redirect($url, $exit = true){
-		
-		if($this->_params['enable_ktai_session'] && 
+
+		if($this->_params['enable_ktai_session'] &&
 			($this->_params['use_redirect_session_id'] || $this->is_imode())){
 			if(strpos($url, '?') === false){
 				$url .= '?';
@@ -312,12 +312,12 @@ class Lib3gk {
 			$url .= sprintf("%s=%s", session_name(),urlencode(session_id()));
 		}
 		header('Location: '.$url);
-		
+
 		if($exit){
 			exit();
 		}
 	}
-	
+
 	//------------------------------------------------
 	//Lib3gkCarrier wrapping methods.
 	//------------------------------------------------
@@ -333,8 +333,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->analyze_user_agent($user_agent);
 	}
-	
-	
+
+
 	/**
 	 * キャリア番号の入手
 	 * 詳しくはLib3gkCarrier::get_carrier()を参照
@@ -348,8 +348,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->get_carrier($user_agent, $refresh);
 	}
-	
-	
+
+
 	/**
 	 * docomo端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_imode()を参照
@@ -361,8 +361,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_imode();
 	}
-	
-	
+
+
 	/**
 	 * SoftBank端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_softbank()を参照
@@ -374,8 +374,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_softbank();
 	}
-	
-	
+
+
 	/**
 	 * vodafone端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_vodafone()を参照
@@ -387,8 +387,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_vodafone();
 	}
-	
-	
+
+
 	/**
 	 * J-PHONE端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_jphone()を参照
@@ -400,8 +400,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_jphone();
 	}
-	
-	
+
+
 	/**
 	 * AU端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_ezweb()を参照
@@ -413,8 +413,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_ezweb();
 	}
-	
-	
+
+
 	/**
 	 * EMOBILE端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_emobile()を参照
@@ -426,8 +426,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_emobile();
 	}
-	
-	
+
+
 	/**
 	 * iPhone端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_iphone()を参照
@@ -439,8 +439,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_iphone();
 	}
-	
-	
+
+
 	/**
 	 * Android端末かのチェック
 	 * 詳しくはLib3gkCarrier::is_android()を参照
@@ -452,8 +452,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_android();
 	}
-	
-	
+
+
 	/**
 	 * 携帯かチェック
 	 * 詳しくはLib3gkCarrier::is_ktai()を参照
@@ -465,8 +465,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_ktai();
 	}
-	
-	
+
+
 	/**
 	 * PHSかチェック
 	 * 詳しくはLib3gkCarrier::is_phs()を参照
@@ -478,8 +478,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_phs();
 	}
-	
-	
+
+
 	/**
 	 * docomoのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_imode_email()を参照
@@ -492,8 +492,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_imode_email($email);
 	}
-	
-	
+
+
 	/**
 	 * SoftBankのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_softbank_email()を参照
@@ -506,8 +506,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_softbank_email($email);
 	}
-	
-	
+
+
 	/**
 	 * vodafoneのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_vodafone_email()を参照
@@ -520,8 +520,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_vodafone_email($email);
 	}
-	
-	
+
+
 	/**
 	 * J-PHONEのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_jphone_email()を参照
@@ -534,8 +534,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_jphone_email($email);
 	}
-	
-	
+
+
 	/**
 	 * AUのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_ezweb_email()を参照
@@ -548,8 +548,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_ezweb_email($email);
 	}
-	
-	
+
+
 	/**
 	 * EMOBILEのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_emobile_email()を参照
@@ -562,8 +562,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_emobile_email($email);
 	}
-	
-	
+
+
 	/**
 	 * iPhoneのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_iphone_email()を参照
@@ -576,8 +576,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_iphone_email($email);
 	}
-	
-	
+
+
 	/**
 	 * 携帯のメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_ktai_email()を参照
@@ -590,8 +590,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_ktai_email($email);
 	}
-	
-	
+
+
 	/**
 	 * PHSのメールアドレスかチェック
 	 * 詳しくはLib3gkCarrier::is_phs_email()を参照
@@ -604,8 +604,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->is_phs_email($email);
 	}
-	
-	
+
+
 	/**
 	 * メールアドレスからキャリアコードの入手
 	 * 詳しくはLib3gkCarrier::get_email_carrier()を参照
@@ -618,8 +618,8 @@ class Lib3gk {
 		$this->__load_carrier();
 		return $this->__carrier->get_email_carrier($email);
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkEmoji wrapping methods.
 	//------------------------------------------------
@@ -635,8 +635,8 @@ class Lib3gk {
 		$this->__load_emoji();
 		return $this->__emoji->create_image_emoji($name);
 	}
-	
-	
+
+
 	/**
 	 * 絵文字の入手
 	 * 詳しくはLib3gkEmoji::emoji()を参照
@@ -654,8 +654,8 @@ class Lib3gk {
 		$this->__load_emoji();
 		return $this->__emoji->emoji($code, $disp, $carrier, $output_encoding, $binary);
 	}
-	
-	
+
+
 	/**
 	 * 絵文字変換
 	 * 詳しくはLib3gkEmoji::convert_moji()を参照
@@ -673,8 +673,8 @@ class Lib3gk {
 		$this->__load_emoji();
 		return $this->__emoji->convert_emoji($str, $carrier, $input_encoding, $output_encoding, $binary);
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkMachine wrapping methods.
 	//------------------------------------------------
@@ -691,8 +691,8 @@ class Lib3gk {
 		$this->__load_machine();
 		return $this->__machine->get_machineinfo($carrier_name, $machine_name);
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkHtml wrapping methods.
 	//------------------------------------------------
@@ -708,8 +708,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->url($url);
 	}
-	
-	
+
+
 	/**
 	 * imageタグ付きの文字列を入手
 	 * 詳しくはLib3gkHtml::image()を参照
@@ -723,8 +723,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->image($url, $htmlAttribute);
 	}
-	
-	
+
+
 	/**
 	 * 指定のサイズの描画エリアにあった画像になるようストレッチの計算をする
 	 * 詳しくはLib3gkHtml::stretch_image_size()を参照
@@ -740,8 +740,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->stretch_image_size($width, $height, $default_width, $default_height);
 	}
-	
-	
+
+
 	/**
 	 * 登録スタイルの呼び出し
 	 * 詳しくはLib3gkHtml::style()を参照
@@ -755,8 +755,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->style($name, $display);
 	}
-	
-	
+
+
 	/**
 	 * 機種に最適のフォント指定を行う
 	 * 詳しくはLib3gkHtml::font()を参照
@@ -772,7 +772,7 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->font($size, $tag, $style, $display);
 	}
-	
+
 	/**
 	 * font()で生成したタグの閉じタグを生成
 	 * 詳しくはLib3gkHtml::fontend()を参照
@@ -785,7 +785,7 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->fontend($display);
 	}
-	
+
 	/**
 	 * QRコードの生成(Google chart APIの利用)
 	 * 詳しくはLib3gkHtml::get_qrcode()を参照
@@ -801,8 +801,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->get_qrcode($str, $options, $input_encoding, $output_encoding);
 	}
-	
-	
+
+
 	/**
 	 * Google static Maps APIを用いて地図表示
 	 * 詳しくはLib3gkHtml::get_static_maps()を参照
@@ -818,8 +818,8 @@ class Lib3gk {
 		$this->__load_html();
 		return $this->__html->get_static_maps($lat, $lon, $options, $api_key);
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkIp wrapping methods.
 	//------------------------------------------------
@@ -835,8 +835,8 @@ class Lib3gk {
 		$this->__load_ip();
 		return $this->__ip->ip2long($ip);
 	}
-	
-	
+
+
 	/**
 	 * IPアドレスが範囲内にあるかのチェック
 	 * 詳しくはLib3gkIp::is_inclusive()を参照
@@ -850,8 +850,8 @@ class Lib3gk {
 		$this->__load_ip();
 		return $this->__ip->is_inclusive($ip, $check_addr);
 	}
-	
-	
+
+
 	/**
 	 * IPアドレスからキャリアコードを入手
 	 * 詳しくはLib3gkIp::ip2carrier()を参照
@@ -864,8 +864,8 @@ class Lib3gk {
 		$this->__load_ip();
 		return $this->__ip->ip2carrier($ip);
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkTools wrapping methods.
 	//------------------------------------------------
@@ -881,8 +881,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->int2str($value);
 	}
-	
-	
+
+
 	/**
 	 * UNICODE数値からUTF-8バイナリコードを入手
 	 * 詳しくはLib3gkTools::int2utf8()を参照
@@ -895,8 +895,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->int2utf8($value);
 	}
-	
-	
+
+
 	/**
 	 * バイナリコードから数値を入手
 	 * 詳しくはLib3gkTools::str2int()を参照
@@ -909,8 +909,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->str2int($str);
 	}
-	
-	
+
+
 	/**
 	 * UTF-8からUNICODE数値バイナリコードを入手
 	 * 詳しくはLib3gkTools::utf82int()を参照
@@ -923,8 +923,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->utf82int($str);
 	}
-	
-	
+
+
 	/**
 	 * 文字エンコーディング名を正規化する
 	 * 詳しくはLib3gkTools::normal_encoding_str()を参照
@@ -937,8 +937,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->normal_encoding_str($str);
 	}
-	
-	
+
+
 	/**
 	 * mailtoリンクの作成
 	 * 詳しくはLib3gkTools::mailto()を参照
@@ -957,8 +957,8 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->mailto($title, $email, $subject, $body, $input_encoding, $output_encoding, $display);
 	}
-	
-	
+
+
 	/**
 	 * 端末UIDの入手
 	 * 詳しくはLib3gkTools::get_uid()を参照
@@ -970,6 +970,6 @@ class Lib3gk {
 		$this->__load_tools();
 		return $this->__tools->get_uid();
 	}
-	
-	
+
+
 }
