@@ -1,14 +1,14 @@
 <?php
 /**
  * Lib3gk, supports Japanese mobile phone sites coding.
- * It provides many functions such as a carrier check to use Referer or E-mail, 
+ * It provides many functions such as a carrier check to use Referer or E-mail,
  * conversion of an Emoji, and more.
  *
  * PHP versions 5
  *
  * Lib3gk
  * Copyright 2009-2012, ECWorks.
- 
+
  * Licensed under The GNU General Public Licence
  * Redistributions of files must retain the above copyright notice.
  *
@@ -26,7 +26,7 @@
  * @subpackage    Lib3gk.libs
  */
 class Lib3gkTools {
-	
+
 	//================================================================
 	//Properties
 	//================================================================
@@ -40,7 +40,7 @@ class Lib3gkTools {
 	 * @access private
 	 */
 	var $__carrier = null;
-	
+
 	//------------------------------------------------
 	//Parameters
 	//------------------------------------------------
@@ -51,11 +51,11 @@ class Lib3gkTools {
 	 * @access protected
 	 */
 	var $_params = array(
-		'input_encoding' => 'UTF-8', 
-		'output_encoding' => 'UTF-8', 
+		'input_encoding' => 'UTF-8',
+		'output_encoding' => 'UTF-8',
 	);
-	
-	
+
+
 	//================================================================
 	//Methods
 	//================================================================
@@ -69,7 +69,7 @@ class Lib3gkTools {
 	 * @access public
 	 * @static
 	 */
-	function &get_instance(){
+	static function &get_instance(){
 		static $instance = array();
 		if(!$instance){
 			$instance[0] =& new Lib3gkTools();
@@ -77,8 +77,8 @@ class Lib3gkTools {
 		}
 		return $instance[0];
 	}
-	
-	
+
+
 	/**
 	 * 初期化
 	 *
@@ -87,8 +87,8 @@ class Lib3gkTools {
 	 */
 	function initialize(){
 	}
-	
-	
+
+
 	/**
 	 * 後始末
 	 *
@@ -97,8 +97,8 @@ class Lib3gkTools {
 	 */
 	function shutdown(){
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Load subclasses
 	//------------------------------------------------
@@ -116,8 +116,8 @@ class Lib3gkTools {
 		$this->_params = array_merge($this->__carrier->_params, $this->_params);
 		$this->__carrier->_params = &$this->_params;
 	}
-	
-	
+
+
 	//------------------------------------------------
 	//Lib3gkTools methods
 	//------------------------------------------------
@@ -137,11 +137,11 @@ class Lib3gkTools {
 			$str = chr($value & 0x0ff) . $str;
 			$value = $value >> 8;
 		}while($value > 0);
-		
+
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * UNICODE数値からUTF-8バイナリコードを入手
 	 *
@@ -156,8 +156,8 @@ class Lib3gkTools {
 		}
 		return mb_convert_encoding($str, 'UTF-8', 'Unicode');
 	}
-	
-	
+
+
 	/**
 	 * バイナリコードから数値を入手
 	 *
@@ -173,8 +173,8 @@ class Lib3gkTools {
 		$value = array_shift($arr);
 		return $value >= 256 ? $value : false;
 	}
-	
-	
+
+
 	/**
 	 * UTF-8からUNICODE数値バイナリコードを入手
 	 *
@@ -186,8 +186,8 @@ class Lib3gkTools {
 		$str = mb_convert_encoding($str, 'Unicode', 'UTF-8');
 		return call_user_func(array(__CLASS__, 'str2int'), $str);
 	}
-	
-	
+
+
 	/**
 	 * 文字エンコーディング名を正規化する
 	 *
@@ -197,16 +197,16 @@ class Lib3gkTools {
 	 */
 	function normal_encoding_str($str){
 		$enc = mb_internal_encoding();
-		
+
 		mb_internal_encoding($str);
 		$str = mb_internal_encoding();
-		
+
 		mb_internal_encoding($enc);
-		
+
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * mailtoリンクの作成
 	 *
@@ -221,19 +221,19 @@ class Lib3gkTools {
 	 * @access public
 	 */
 	function mailto($title, $email, $subject = null, $body = null, $input_encoding = null, $output_encoding = null, $display = true){
-		
+
 		$this->__load_carrier();
-		
+
 		if($input_encoding === null){
 			$input_encoding = $this->_params['input_encoding'];
 		}
 		$input_encoding = $this->normal_encoding_str($input_encoding);
-		
+
 		if($output_encoding === null){
 			$output_encoding = $this->_params['output_encoding'];
 		}
 		$output_encoding = $this->normal_encoding_str($output_encoding);
-		
+
 		if($this->__carrier->is_iphone()){
 			$subject = mb_ereg_replace("\r", "", $subject);
 			$subject = mb_ereg_replace("\n", "%0D%0A", $subject);
@@ -267,7 +267,7 @@ class Lib3gkTools {
 				$body = urlencode($body);
 			}
 		}
-		
+
 		$str = '';
 		if($subject !== null){
 			$str .= 'subject='.$subject;
@@ -282,14 +282,14 @@ class Lib3gkTools {
 			$str = '?'.$str;
 		}
 		$str = '<a href="mailto:'.$email.$str.'">'.$title.'</a>';
-		
+
 		if($display){
 			echo $str;
 		}
 		return $str;
 	}
-	
-	
+
+
 	/**
 	 * 端末UIDの入手
 	 *
@@ -297,11 +297,11 @@ class Lib3gkTools {
 	 * @access public
 	 */
 	function get_uid(){
-		
+
 		$this->__load_carrier();
-		
+
 		$uid = false;
-		
+
 		if($this->__carrier->is_imode()){
 			if(isset($_SERVER['HTTP_X_DCMGUID'])){
 				$uid = $_SERVER['HTTP_X_DCMGUID'];
@@ -322,8 +322,8 @@ class Lib3gkTools {
 				$uid = $_SERVER['HTTP_X_EM_UID'];
 			}
 		}
-		
+
 		return $uid;
 	}
-	
+
 }
